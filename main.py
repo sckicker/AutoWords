@@ -5,6 +5,8 @@ import time
 import json
 import os
 import pyttsx3
+import threading
+import queue
 from pygame.locals import *
 from config import *
 from lessons import NEW_CONCEPT_LESSONS
@@ -86,6 +88,43 @@ class Game:
         
         # Initialize TTS engine
         self.init_tts()
+        
+        # Initialize voice queue and thread
+        self.voice_queue = queue.Queue()
+        self.voice_thread = None
+        self.start_voice_thread()
+    
+    def start_voice_thread(self):
+        """启动语音播放线程"""
+        if TTS_ENABLED:
+            self.voice_thread = threading.Thread(target=self.voice_worker, daemon=True)
+            self.voice_thread.start()
+    
+    def voice_worker(self):
+        """语音播放工作线程"""
+        while True:
+            try:
+                text = self.voice_queue.get(timeout=0.1)
+                if text is None:
+                    break
+                try:
+                    self.tts_engine.say(text)
+                    self.tts_engine.runAndWait()
+                except Exception as e:
+                    print(f"语音播放失败: {e}")
+            except queue.Empty:
+                continue
+    
+    def speak_async(self, text):
+        """异步播放语音"""
+        if TTS_ENABLED and self.voice_thread:
+            self.voice_queue.put(text)
+    
+    def stop_voice_thread(self):
+        """停止语音播放线程"""
+        if self.voice_thread:
+            self.voice_queue.put(None)
+            self.voice_thread.join(timeout=1)
     
     def load_audio(self):
         """加载音频文件"""
@@ -171,7 +210,7 @@ class Game:
         return False
     
     def speak(self, text):
-        """朗读文本"""
+        """朗读文本（同步）"""
         if TTS_ENABLED and hasattr(self, 'tts_engine'):
             try:
                 self.tts_engine.say(text)
@@ -179,22 +218,27 @@ class Game:
             except Exception as e:
                 print(f"朗读失败: {e}")
     
+    def speak_async(self, text):
+        """异步朗读文本"""
+        if TTS_ENABLED and hasattr(self, 'tts_engine') and self.voice_thread:
+            self.voice_queue.put(text)
+    
     def speak_sentence(self):
-        """朗读当前句子"""
+        """朗读当前句子（异步）"""
         if self.current_sentence:
-            self.speak(self.current_sentence)
+            self.speak_async(self.current_sentence)
     
     def speak_praise(self):
-        """朗读夸奖语"""
+        """朗读夸奖语（异步）"""
         if PRAISE_PHRASES:
             praise = random.choice(PRAISE_PHRASES)
-            self.speak(praise)
+            self.speak_async(praise)
     
     def speak_encouragement(self):
-        """朗读鼓励语"""
+        """朗读鼓励语（异步）"""
         if ENCOURAGEMENT_PHRASES:
             encouragement = random.choice(ENCOURAGEMENT_PHRASES)
-            self.speak(encouragement)
+            self.speak_async(encouragement)
     
     def reset_level(self):
         """重置当前关卡"""
