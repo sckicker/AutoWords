@@ -1,0 +1,208 @@
+{
+    "meta": {
+        "source": "New Concept English",
+        "book": 1,
+        "version": "1.0",
+        "description": "新概念英语第一册"
+    },
+    "lessons": [
+        {
+            "level": 1,
+            "title": "Lesson 1 - Excuse me!",
+            "difficulty": 1,
+            "words": ["excuse", "me", "yes", "this", "your", "handbag", "pardon", "it", "is", "thank", "very", "much"],
+            "sentences": [
+                {"text": "Excuse me.", "translation": "对不起/打扰一下。"},
+                {"text": "Yes?", "translation": "什么事？"},
+                {"text": "Is this your handbag?", "translation": "这是你的手提包吗？"},
+                {"text": "Pardon?", "translation": "什么？请再说一遍。"},
+                {"text": "Is this your handbag?", "translation": "这是你的手提包吗？"},
+                {"text": "Yes, it is.", "translation": "是的，是我的。"},
+                {"text": "Thank you very much.", "translation": "非常感谢。"}
+            ]
+        },
+        {
+            "level": 2,
+            "title": "Lesson 2 - Is this your...?",
+            "difficulty": 1,
+            "words": ["pen", "pencil", "book", "ruler", "no", "isn't"],
+            "sentences": [
+                {"text": "Is this your pen?", "translation": "这是你的钢笔吗？"},
+                {"text": "Yes, it is.", "translation": "是的，是我的。"},
+                {"text": "Is this your pencil?", "translation": "这是你的铅笔吗？"},
+                {"text": "No, it isn't.", "translation": "不，不是。"},
+                {"text": "Is this your book?", "translation": "这是你的书吗？"},
+                {"text": "Yes, it is.", "translation": "是的，是我的。"},
+                {"text": "Is this your ruler?", "translation": "这是你的尺子吗？"},
+                {"text": "No, it isn't.", "translation": "不，不是。"}
+            ]
+        },
+        {
+            "level": 3,
+            "title": "Lesson 3 - Sorry, sir.",
+            "difficulty": 1,
+            "words": ["my", "coat", "umbrella", "please", "here", "ticket", "sir", "number", "five", "sorry", "not"],
+            "sentences": [
+                {"text": "My coat and my umbrella please.", "translation": "请把我的外套和雨伞给我。"},
+                {"text": "Here is my ticket.", "translation": "这是我的票。"},
+                {"text": "Thank you, sir.", "translation": "谢谢您，先生。"},
+                {"text": "Number five.", "translation": "五号。"},
+                {"text": "Here is your umbrella and your coat.", "translation": "这是您的雨伞和外套。"},
+                {"text": "This is not my umbrella.", "translation": "这不是我的雨伞。"},
+                {"text": "Sorry, sir.", "translation": "对不起，先生。"}
+            ]
+        },
+        {
+            "level": 4,
+            "title": "Lesson 4 - Is my team blue?",
+            "difficulty": 1,
+            "words": ["come", "on", "look", "at", "team", "blue", "green", "aren't", "clothes", "too", "fine", "that's"],
+            "sentences": [
+                {"text": "Come on, Joe.", "translation": "快点，乔。"},
+                {"text": "Look at my team.", "translation": "看看我的队。"},
+                {"text": "They're blue.", "translation": "他们穿蓝色。"},
+                {"text": "Are they green?", "translation": "他们穿绿色吗？"},
+                {"text": "No, they aren't.", "translation": "不，不是。"},
+                {"text": "They're blue.", "translation": "他们穿蓝色。"},
+                {"text": "Are my clothes green, too?", "translation": "我的衣服也是绿色吗？"},
+                {"text": "Yes, they are.", "translation": "是的，是绿色。"},
+                {"text": "That's fine.", "translation": "那很好。"}
+            ]
+        },
+        {
+            "level": 5,
+            "title": "Lesson 5 - Nice to meet you.",
+            "difficulty": 1,
+            "words": ["good", "morning", "Mr", "Miss", "new", "student", "she", "French", "nice", "meet", "you"],
+            "sentences": [
+                {"text": "Good morning.", "translation": "早上好。"},
+                {"text": "Good morning, Mr. Blake.", "translation": "早上好，布莱克先生。"},
+                {"text": "This is Miss Sophie Dupont.", "translation": "这是索菲·杜邦小姐。"},
+                {"text": "Sophie is a new student.", "translation": "索菲是一名新学生。"},
+                {"text": "She is French.", "translation": "她是法国人。"},
+                {"text": "Nice to meet you.", "translation": "很高兴认识你。"},
+                {"text": "Nice to meet you too.", "translation": "我也很高兴认识你。"}
+            ]
+        },
+        {
+            "level": 6,
+            "title": "Lesson 6 - What make is it?",
+            "difficulty": 2,
+            "words": ["what", "make", "Ford", "colour", "color", "American", "car", "Mercedes", "white", "German"],
+            "sentences": [
+                {"text": "What make is it?", "translation": "它是什么牌子的？"},
+                {"text": "It's a Ford.", "translation": "它是福特。"},
+                {"text": "What colour is it?", "translation": "它是什么颜色的？"},
+                {"text": "It's green.", "translation": "它是绿色的。"},
+                {"text": "Is it American?", "translation": "它是美国产的吗？"},
+                {"text": "Yes, it is.", "translation": "是的，是美国产的。"},
+                {"text": "What make is your car?", "translation": "你的车是什么牌子的？"},
+                {"text": "It's a Mercedes.", "translation": "它是奔驰。"},
+                {"text": "What colour is it?", "translation": "它是什么颜色的？"},
+                {"text": "It's white.", "translation": "它是白色的。"},
+                {"text": "Is it German?", "translation": "它是德国产的吗？"},
+                {"text": "Yes, it is.", "translation": "是的，是德国产的。"}
+            ]
+        },
+        {
+            "level": 7,
+            "title": "Lesson 7 - Are you a teacher?",
+            "difficulty": 2,
+            "words": ["teacher", "I", "am", "engineer", "nationality", "Italian", "doctor", "job", "keyboard", "operator"],
+            "sentences": [
+                {"text": "Are you a teacher?", "translation": "你是老师吗？"},
+                {"text": "Yes, I am.", "translation": "是的，我是。"},
+                {"text": "What are you?", "translation": "你是做什么的？"},
+                {"text": "I'm an engineer.", "translation": "我是工程师。"},
+                {"text": "Are you French?", "translation": "你是法国人吗？"},
+                {"text": "Yes, I am.", "translation": "是的，我是。"},
+                {"text": "What nationality are you?", "translation": "你是哪国人？"},
+                {"text": "I'm Italian.", "translation": "我是意大利人。"},
+                {"text": "Are you a doctor?", "translation": "你是医生吗？"},
+                {"text": "No, I'm not.", "translation": "不，我不是。"},
+                {"text": "What's your job?", "translation": "你的工作是什么？"},
+                {"text": "I'm a keyboard operator.", "translation": "我是键盘操作员。"}
+            ]
+        },
+        {
+            "level": 8,
+            "title": "Lesson 8 - What's your job?",
+            "difficulty": 2,
+            "words": ["he's", "his", "she's", "her", "they're", "their", "mechanics", "typist", "jobs"],
+            "sentences": [
+                {"text": "I'm a keyboard operator.", "translation": "我是键盘操作员。"},
+                {"text": "What's your job?", "translation": "你的工作是什么？"},
+                {"text": "He's an engineer.", "translation": "他是工程师。"},
+                {"text": "What's his job?", "translation": "他的工作是什么？"},
+                {"text": "She's a typist.", "translation": "她是打字员。"},
+                {"text": "What's her job?", "translation": "她的工作是什么？"},
+                {"text": "They're mechanics.", "translation": "他们是机械师。"},
+                {"text": "What are their jobs?", "translation": "他们的工作是什么？"}
+            ]
+        },
+        {
+            "level": 9,
+            "title": "Lesson 9 - How are you today?",
+            "difficulty": 2,
+            "words": ["hello", "how", "today", "well", "thanks", "and", "fine"],
+            "sentences": [
+                {"text": "Hello, Helen.", "translation": "你好，海伦。"},
+                {"text": "Hi, Steven.", "translation": "嗨，史蒂文。"},
+                {"text": "How are you today?", "translation": "你今天好吗？"},
+                {"text": "I'm very well, thank you.", "translation": "我很好，谢谢。"},
+                {"text": "And you?", "translation": "你呢？"},
+                {"text": "I'm fine, thanks.", "translation": "我很好，谢谢。"},
+                {"text": "How is Tony?", "translation": "托尼怎么样？"},
+                {"text": "He's fine, thanks.", "translation": "他很好，谢谢。"}
+            ]
+        },
+        {
+            "level": 10,
+            "title": "Lesson 10 - Look at...",
+            "difficulty": 2,
+            "words": ["fat", "woman", "thin", "tall", "man", "short", "dirty", "clean", "hot", "cold", "old", "young", "busy", "lazy"],
+            "sentences": [
+                {"text": "Look at that man.", "translation": "看那个男人。"},
+                {"text": "He is very fat.", "translation": "他很胖。"},
+                {"text": "Look at that woman.", "translation": "看那个女人。"},
+                {"text": "She is very thin.", "translation": "她很瘦。"},
+                {"text": "Look at that policeman.", "translation": "看那个警察。"},
+                {"text": "He is very tall.", "translation": "他很高。"},
+                {"text": "Look at that policewoman.", "translation": "看那个女警察。"},
+                {"text": "She is very short.", "translation": "她很矮。"}
+            ]
+        },
+        {
+            "level": 11,
+            "title": "Lesson 11 - Is this your shirt?",
+            "difficulty": 2,
+            "words": ["whose", "shirt", "perhaps", "white", "catch", "daughter", "blouse", "house"],
+            "sentences": [
+                {"text": "Whose shirt is that?", "translation": "那是谁的衬衫？"},
+                {"text": "Is this your shirt, Dave?", "translation": "戴夫，这是你的衬衫吗？"},
+                {"text": "No, sir. It's not my shirt.", "translation": "不，先生。这不是我的衬衫。"},
+                {"text": "This is my shirt.", "translation": "这是我的衬衫。"},
+                {"text": "My shirt is blue.", "translation": "我的衬衫是蓝色的。"},
+                {"text": "Is this shirt Tim's?", "translation": "这是蒂姆的衬衫吗？"},
+                {"text": "Perhaps it is, sir.", "translation": "也许是的，先生。"},
+                {"text": "Tim's shirt is white.", "translation": "蒂姆的衬衫是白色的。"}
+            ]
+        },
+        {
+            "level": 12,
+            "title": "Lesson 12 - Whose is this...?",
+            "difficulty": 2,
+            "words": ["father", "mother", "blouse", "sister", "brother", "tie", "his", "her"],
+            "sentences": [
+                {"text": "Whose is this handbag?", "translation": "这是谁的手提包？"},
+                {"text": "It's my mother's.", "translation": "是我妈妈的。"},
+                {"text": "Whose is this pen?", "translation": "这是谁的钢笔？"},
+                {"text": "It's my father's.", "translation": "是我爸爸的。"},
+                {"text": "Whose is this blouse?", "translation": "这是谁的衬衫？"},
+                {"text": "It's my sister's.", "translation": "是我姐姐的。"},
+                {"text": "Whose is this tie?", "translation": "这是谁的领带？"},
+                {"text": "It's my brother's.", "translation": "是我哥哥的。"}
+            ]
+        }
+    ]
+}

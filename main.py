@@ -10,212 +10,27 @@ import queue
 import numpy as np
 from pygame.locals import *
 from config import *
-from lessons import NEW_CONCEPT_LESSONS
+
+# 尝试从新的模块结构导入，否则回退到旧的导入方式
+try:
+    from src import SoundGenerator, AchievementSystem, LevelSystem, Leaderboard, DailyChallenge
+    from data.lessons.loader import LessonLoader
+    # 使用新的JSON数据加载器
+    lesson_loader = LessonLoader()
+    NEW_CONCEPT_LESSONS = lesson_loader.load_all()
+    if not NEW_CONCEPT_LESSONS:
+        # 如果JSON文件为空，回退到旧的lessons.py
+        from lessons import NEW_CONCEPT_LESSONS
+except ImportError:
+    # 回退到旧的导入方式
+    from lessons import NEW_CONCEPT_LESSONS
+    # 内联类定义（兼容模式）
+    LevelSystem = None
+    Leaderboard = None
+    DailyChallenge = None
 
 # 初始化Pygame
 pygame.init()
-
-
-class SoundGenerator:
-    """使用程序生成音效，解决音效文件缺失问题"""
-
-    @staticmethod
-    def generate_type_sound():
-        """生成打字'啪'音效 - 短促的敲击声"""
-        sample_rate = 44100
-        duration = 0.05  # 50毫秒
-        t = np.linspace(0, duration, int(sample_rate * duration), False)
-
-        # 组合多个频率产生敲击感
-        freq1, freq2 = 800, 1200
-        wave = np.sin(2 * np.pi * freq1 * t) * 0.5 + np.sin(2 * np.pi * freq2 * t) * 0.3
-
-        # 快速衰减包络
-        envelope = np.exp(-t * 60)
-        wave = wave * envelope
-
-        # 添加一点噪声增加真实感
-        noise = np.random.uniform(-0.1, 0.1, len(t))
-        wave = wave * 0.8 + noise * 0.2
-
-        # 转换为16位整数
-        wave = np.int16(wave * 32767 * 0.5)
-        stereo = np.column_stack((wave, wave))
-
-        return pygame.sndarray.make_sound(stereo)
-
-    @staticmethod
-    def generate_correct_sound():
-        """生成正确音效 - 上升的悦耳音调"""
-        sample_rate = 44100
-        duration = 0.15
-        t = np.linspace(0, duration, int(sample_rate * duration), False)
-
-        # 上升音调
-        freq = 440 + 200 * t / duration
-        wave = np.sin(2 * np.pi * freq * t)
-
-        # 平滑包络
-        envelope = np.sin(np.pi * t / duration)
-        wave = wave * envelope
-
-        wave = np.int16(wave * 32767 * 0.4)
-        stereo = np.column_stack((wave, wave))
-
-        return pygame.sndarray.make_sound(stereo)
-
-    @staticmethod
-    def generate_error_sound():
-        """生成错误音效 - 下降的低沉音调"""
-        sample_rate = 44100
-        duration = 0.2
-        t = np.linspace(0, duration, int(sample_rate * duration), False)
-
-        # 下降音调
-        freq = 300 - 100 * t / duration
-        wave = np.sin(2 * np.pi * freq * t)
-
-        envelope = np.exp(-t * 5)
-        wave = wave * envelope
-
-        wave = np.int16(wave * 32767 * 0.4)
-        stereo = np.column_stack((wave, wave))
-
-        return pygame.sndarray.make_sound(stereo)
-
-    @staticmethod
-    def generate_complete_sound():
-        """生成完成音效 - 和弦上升"""
-        sample_rate = 44100
-        duration = 0.5
-        t = np.linspace(0, duration, int(sample_rate * duration), False)
-
-        # C大调和弦 (C, E, G)
-        wave = (np.sin(2 * np.pi * 523.25 * t) +  # C5
-                np.sin(2 * np.pi * 659.25 * t) +  # E5
-                np.sin(2 * np.pi * 783.99 * t))   # G5
-
-        envelope = np.sin(np.pi * t / duration)
-        wave = wave * envelope / 3
-
-        wave = np.int16(wave * 32767 * 0.5)
-        stereo = np.column_stack((wave, wave))
-
-        return pygame.sndarray.make_sound(stereo)
-
-
-class AchievementSystem:
-    """成就系统"""
-
-    ACHIEVEMENTS = {
-        'first_level': {
-            'name': 'First Steps',
-            'description': 'Complete your first level',
-            'icon': '🎯'
-        },
-        'perfect_sentence': {
-            'name': 'Perfect!',
-            'description': '100% accuracy on a sentence',
-            'icon': '⭐'
-        },
-        'speed_demon': {
-            'name': 'Speed Demon',
-            'description': 'Type faster than 60 chars/min',
-            'icon': '⚡'
-        },
-        'combo_5': {
-            'name': 'On a Roll',
-            'description': 'Reach a 5x combo',
-            'icon': '🔥'
-        },
-        'combo_10': {
-            'name': 'Unstoppable',
-            'description': 'Reach a 10x combo',
-            'icon': '💫'
-        },
-        'combo_20': {
-            'name': 'Legendary',
-            'description': 'Reach a 20x combo',
-            'icon': '👑'
-        },
-        'all_levels': {
-            'name': 'Champion',
-            'description': 'Complete all levels',
-            'icon': '🏆'
-        },
-        'no_errors': {
-            'name': 'Flawless',
-            'description': 'Complete a level with no errors',
-            'icon': '💎'
-        }
-    }
-
-    def __init__(self):
-        self.unlocked = set()
-        self.pending_notifications = []
-        self.load_achievements()
-
-    def unlock(self, achievement_id):
-        """解锁成就"""
-        if achievement_id not in self.unlocked and achievement_id in self.ACHIEVEMENTS:
-            self.unlocked.add(achievement_id)
-            achievement = self.ACHIEVEMENTS[achievement_id]
-            self.pending_notifications.append(achievement)
-            self.save_achievements()
-            return True
-        return False
-
-    def check_combo(self, combo):
-        """检查连击成就"""
-        if combo >= 5:
-            self.unlock('combo_5')
-        if combo >= 10:
-            self.unlock('combo_10')
-        if combo >= 20:
-            self.unlock('combo_20')
-
-    def check_speed(self, speed):
-        """检查速度成就"""
-        if speed >= 60:
-            self.unlock('speed_demon')
-
-    def check_accuracy(self, accuracy):
-        """检查准确率成就"""
-        if accuracy >= 100:
-            self.unlock('perfect_sentence')
-
-    def check_level_complete(self, level, errors, total_levels):
-        """检查关卡完成成就"""
-        if level == 0:
-            self.unlock('first_level')
-        if errors == 0:
-            self.unlock('no_errors')
-        # 检查是否完成所有关卡
-        if level >= total_levels - 1:
-            self.unlock('all_levels')
-
-    def get_pending_notification(self):
-        """获取待显示的成就通知"""
-        if self.pending_notifications:
-            return self.pending_notifications.pop(0)
-        return None
-
-    def save_achievements(self):
-        """保存成就到文件"""
-        try:
-            with open('achievements.json', 'w') as f:
-                json.dump(list(self.unlocked), f)
-        except Exception as e:
-            print(f"保存成就失败: {e}")
-
-    def load_achievements(self):
-        """从文件加载成就"""
-        try:
-            if os.path.exists('achievements.json'):
-                with open('achievements.json', 'r') as f:
-                    self.unlocked = set(json.load(f))
-        except Exception as e:
-            print(f"加载成就失败: {e}")
 
 
 class Game:
@@ -278,6 +93,9 @@ class Game:
         self.init_stars()
         self.frame_count = 0
 
+        # 单词位置记录（用于点击朗读）
+        self.word_rects = []
+
         # 连击系统 (Combo)
         self.combo = 0
         self.max_combo = 0
@@ -291,6 +109,24 @@ class Game:
         self.achievement_system = AchievementSystem()
         self.current_achievement_notification = None
         self.notification_timer = 0
+
+        # 等级系统
+        if LevelSystem:
+            self.level_system = LevelSystem()
+        else:
+            self.level_system = None
+
+        # 排行榜系统
+        if Leaderboard:
+            self.leaderboard = Leaderboard()
+        else:
+            self.leaderboard = None
+
+        # 每日挑战系统
+        if DailyChallenge:
+            self.daily_challenge = DailyChallenge()
+        else:
+            self.daily_challenge = None
 
         # Initialize audio system
         pygame.mixer.init()
@@ -470,7 +306,34 @@ class Game:
         """朗读当前句子（异步）"""
         if self.current_sentence:
             self.speak_async(self.current_sentence)
-    
+
+    def speak_word(self, word):
+        """朗读单个单词（异步）"""
+        if TTS_ENABLED and word:
+            # 清理单词中的标点符号
+            clean_word = word.strip('.,!?;:"\'-')
+            if clean_word:
+                self.speak_async(clean_word)
+
+    def speak_current_word(self):
+        """朗读当前正在输入的单词"""
+        if not self.current_sentence:
+            return
+        words = self.current_sentence.split()
+        # 根据用户输入进度确定当前单词
+        input_words = self.user_input.split() if self.user_input else []
+        current_word_index = len(input_words)
+        if current_word_index < len(words):
+            self.speak_word(words[current_word_index])
+
+    def speak_word_by_index(self, index):
+        """朗读指定索引的单词"""
+        if not self.current_sentence:
+            return
+        words = self.current_sentence.split()
+        if 0 <= index < len(words):
+            self.speak_word(words[index])
+
     def speak_praise(self):
         """朗读夸奖语（异步）- 根据连击数选择不同级别的夸奖"""
         if self.combo >= 10:
@@ -895,13 +758,16 @@ class Game:
         
         # Start position to center the words
         x_offset = (self.screen_width - total_width) // 2
-        
+
+        # 清空单词位置记录
+        self.word_rects = []
+
         # Draw all words with highlighting
         for i, (word, word_surface) in enumerate(zip(words, word_surfaces)):
             # Check if this word has been typed correctly
             is_correct = i < len(input_words) and input_words[i] == word
             is_typed = i < len(input_words)
-            
+
             # Determine text color
             if is_typed:
                 if is_correct:
@@ -910,18 +776,22 @@ class Game:
                     text_color = COLORS['INCORRECT']
             else:
                 text_color = COLORS['TEXT']
-            
+
             # Render word with correct color
             word_surface_colored = self.font_large.render(word, True, text_color)
-            
+
+            # 记录单词位置（用于点击朗读）
+            word_rect = pygame.Rect(x_offset, sentence_y, word_surface.get_width(), word_surface.get_height())
+            self.word_rects.append((word, word_rect, i))
+
             # Draw text shadow for 3D effect
             shadow_offset = 3
             word_surface_shadow = self.font_large.render(word, True, COLORS['TEXT_SHADOW'])
             self.screen.blit(word_surface_shadow, (x_offset + shadow_offset, sentence_y + shadow_offset))
-            
+
             # Draw main text
             self.screen.blit(word_surface_colored, (x_offset, sentence_y))
-            
+
             x_offset += word_surface.get_width() + 30
         
         # Draw input area with 3D effect
@@ -1262,11 +1132,26 @@ class Game:
                             self.handle_input('\r')
                         elif event.key == K_ESCAPE:
                             self.state = "menu"
+                        elif event.key == K_SPACE:
+                            # 空格键朗读当前句子
+                            self.speak_sentence()
+                        elif event.key == K_TAB:
+                            # Tab键朗读当前单词
+                            self.speak_current_word()
                         else:
                             # 获取按键字符
                             key_char = event.unicode
                             if key_char:
                                 self.handle_input(key_char)
+                # 处理鼠标点击事件（点击单词朗读）
+                elif event.type == MOUSEBUTTONDOWN:
+                    if event.button == 1 and self.state == "playing":  # 左键点击
+                        for word, rect, index in self.word_rects:
+                            if rect.collidepoint(event.pos):
+                                self.speak_word(word)
+                                # 创建点击反馈粒子效果
+                                self.create_particles(rect.centerx, rect.centery, (100, 200, 255), 5)
+                                break
                     elif self.state == "level_complete":
                         # 处理关卡完成输入
                         if event.key == K_ESCAPE:

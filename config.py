@@ -56,6 +56,8 @@ SFX_VOLUME = 0.7  # 音效音量 (0.0 - 1.0)
 TTS_ENABLED = True  # 是否启用TTS语音朗读
 TTS_RATE = 150  # 语速（每分钟单词数）
 TTS_VOLUME = 0.8  # TTS音量 (0.0 - 1.0)
+TTS_WORD_ENABLED = True  # 是否启用单词朗读
+TTS_CLICK_TO_SPEAK = True  # 是否启用点击朗读
 
 # 夸奖语列表
 PRAISE_PHRASES = [
