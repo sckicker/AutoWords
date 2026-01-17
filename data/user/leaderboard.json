@@ -1,0 +1,38 @@
+{
+  "daily": [
+    {
+      "name": "Player",
+      "score": 13381,
+      "accuracy": 107,
+      "speed": 204,
+      "combo": 51,
+      "level": 9,
+      "date": "2026-01-17",
+      "time": "15:59:57"
+    }
+  ],
+  "weekly": [
+    {
+      "name": "Player",
+      "score": 13381,
+      "accuracy": 107,
+      "speed": 204,
+      "combo": 51,
+      "level": 9,
+      "date": "2026-01-17",
+      "time": "15:59:57"
+    }
+  ],
+  "all_time": [
+    {
+      "name": "Player",
+      "score": 13381,
+      "accuracy": 107,
+      "speed": 204,
+      "combo": 51,
+      "level": 9,
+      "date": "2026-01-17",
+      "time": "15:59:57"
+    }
+  ]
+}

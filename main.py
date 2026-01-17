@@ -35,15 +35,11 @@ pygame.init()
 
 class Game:
     def __init__(self):
-        # 默认全屏模式
-        self.fullscreen = True
-        if self.fullscreen:
-            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-            # 获取全屏分辨率
-            self.screen_width, self.screen_height = pygame.display.get_surface().get_size()
-        else:
-            self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-            self.screen_width, self.screen_height = SCREEN_WIDTH, SCREEN_HEIGHT
+        # 默认窗口模式，支持调整大小 (Default window mode, resizable)
+        self.fullscreen = False
+        self.screen_width = SCREEN_WIDTH
+        self.screen_height = SCREEN_HEIGHT
+        self._create_display()
             
         pygame.display.set_caption(GAME_TITLE)
         self.clock = pygame.time.Clock()
@@ -73,7 +69,8 @@ class Game:
             self.font_small = pygame.font.SysFont('arialunicode', font_sizes['SMALL'])
         
         # Game state
-        self.state = "menu"  # menu, playing, level_complete, game_over
+        self.state = "menu"  # menu, course_select, playing, level_complete, game_over, leaderboard, achievements
+        self.menu_index = 0  # 主菜单选择索引 (Main menu selection index)
         self.current_level = 0
         self.current_sentence_index = 0
         self.current_sentence = ""
@@ -147,7 +144,66 @@ class Game:
         self.voice_queue = queue.Queue()
         self.voice_thread = None
         self.start_voice_thread()
-    
+
+    def _create_display(self):
+        """创建显示窗口 (Create display window)"""
+        if self.fullscreen:
+            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            self.screen_width, self.screen_height = pygame.display.get_surface().get_size()
+        else:
+            self.screen = pygame.display.set_mode(
+                (self.screen_width, self.screen_height),
+                pygame.RESIZABLE
+            )
+
+    def toggle_fullscreen(self):
+        """切换全屏/窗口模式 (Toggle fullscreen/window mode)"""
+        self.fullscreen = not self.fullscreen
+        if self.fullscreen:
+            # 进入全屏
+            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            self.screen_width, self.screen_height = pygame.display.get_surface().get_size()
+        else:
+            # 恢复窗口模式
+            self.screen_width = SCREEN_WIDTH
+            self.screen_height = SCREEN_HEIGHT
+            self.screen = pygame.display.set_mode(
+                (self.screen_width, self.screen_height),
+                pygame.RESIZABLE
+            )
+        # 重新计算字体大小
+        self._update_fonts()
+        # 重新初始化星空背景
+        self.init_stars()
+
+    def _update_fonts(self):
+        """根据屏幕大小更新字体 (Update fonts based on screen size)"""
+        scale_factor = self.screen_height / 700
+        font_sizes = {
+            'LARGE': int(FONTS['LARGE'] * scale_factor),
+            'MEDIUM': int(FONTS['MEDIUM'] * scale_factor),
+            'SMALL': int(FONTS['SMALL'] * scale_factor)
+        }
+        try:
+            self.font_large = pygame.font.Font('Arial Unicode.ttf', font_sizes['LARGE'])
+        except:
+            self.font_large = pygame.font.SysFont('arialunicode', font_sizes['LARGE'])
+        try:
+            self.font_medium = pygame.font.Font('Arial Unicode.ttf', font_sizes['MEDIUM'])
+        except:
+            self.font_medium = pygame.font.SysFont('arialunicode', font_sizes['MEDIUM'])
+        try:
+            self.font_small = pygame.font.Font('Arial Unicode.ttf', font_sizes['SMALL'])
+        except:
+            self.font_small = pygame.font.SysFont('arialunicode', font_sizes['SMALL'])
+
+    def handle_resize(self, width, height):
+        """处理窗口大小变化 (Handle window resize)"""
+        self.screen_width = width
+        self.screen_height = height
+        self._update_fonts()
+        self.init_stars()
+
     def start_voice_thread(self):
         """启动语音播放线程"""
         if TTS_ENABLED:
@@ -442,16 +498,49 @@ class Game:
                 # 正确完成一句，表扬一下（根据连击选择夸奖语）
                 self.speak_praise()
 
+                # 添加句子完成经验 (Add EXP for sentence completion)
+                if self.level_system:
+                    is_perfect = (accuracy == 100)
+                    self.level_system.add_exp_for_sentence(perfect=is_perfect)
+                    # 连击奖励经验
+                    if self.combo > 0:
+                        self.level_system.add_exp_for_combo(self.combo)
+
                 # 进入下一句
                 self.current_sentence_index += 1
                 if self.current_sentence_index >= len(NEW_CONCEPT_LESSONS[self.current_level]["sentences"]):
                     # 本关完成，添加关卡完成奖励
                     self.score += LEVEL_COMPLETION_BONUS
                     self.level_scores[self.current_level] = self.score
+
                     # 检查关卡完成成就
                     self.achievement_system.check_level_complete(
                         self.current_level, self.errors, len(NEW_CONCEPT_LESSONS)
                     )
+
+                    # 添加经验值 (Add experience points)
+                    if self.level_system:
+                        # 关卡完成经验
+                        level_up = self.level_system.add_exp_for_level()
+                        if level_up:
+                            # 升级了！可以添加通知
+                            pass
+                        # 保存进度
+                        self.level_system.save_progress()
+
+                    # 提交排行榜 (Submit to leaderboard)
+                    if self.leaderboard:
+                        final_accuracy = self.calculate_accuracy()
+                        final_speed = self.calculate_speed()
+                        self.leaderboard.add_score(
+                            player_name="Player",
+                            score=self.score,
+                            accuracy=final_accuracy,
+                            speed=final_speed,
+                            combo=self.max_combo,
+                            level=self.current_level + 1
+                        )
+
                     self.state = "level_complete"
                 else:
                     self.next_sentence()
@@ -477,6 +566,9 @@ class Game:
             idx = len(self.user_input) - 1
             if idx < len(self.current_sentence) and self.user_input[idx] == self.current_sentence[idx]:
                 self.correct_chars += 1
+                # 添加经验值 (Add EXP for correct char)
+                if self.level_system:
+                    self.level_system.add_exp_for_char()
                 # 连击系统
                 self.combo += 1
                 self.combo_timer = time.time()
@@ -665,58 +757,298 @@ class Game:
         # 绘制背景星星
         self.update_and_draw_stars()
     
+    def draw_panel(self, x, y, width, height, title=None):
+        """绘制面板背景 (Draw panel background)"""
+        # 面板背景
+        panel_rect = pygame.Rect(x, y, width, height)
+        pygame.draw.rect(self.screen, COLORS['INPUT_BG'], panel_rect, border_radius=10)
+        pygame.draw.rect(self.screen, COLORS['UI'], panel_rect, 2, border_radius=10)
+
+        # 面板标题
+        if title:
+            title_text = self.font_small.render(title, True, COLORS['HIGHLIGHT'])
+            self.screen.blit(title_text, (x + 10, y + 5))
+
+        return panel_rect
+
     def draw_menu(self):
-        """Draw menu interface"""
+        """绘制简洁主菜单 (Draw simplified main menu)"""
         self.draw_gradient_background()
-        
-        # Draw title with shadow effect
+
+        center_x = self.screen_width // 2
+
+        # 1. 标题 Title with shadow
         title = self.font_large.render(GAME_TITLE, True, COLORS['TEXT'])
-        title_rect = title.get_rect(center=(self.screen_width//2, self.screen_height//6))
-        
-        # Draw title shadow
+        title_rect = title.get_rect(center=(center_x, 60))
         title_shadow = self.font_large.render(GAME_TITLE, True, COLORS['TEXT_SHADOW'])
-        title_shadow_rect = title_shadow.get_rect(center=(self.screen_width//2 + 3, self.screen_height//6 + 3))
-        self.screen.blit(title_shadow, title_shadow_rect)
-        
-        # Draw main title
+        self.screen.blit(title_shadow, (title_rect.x + 2, title_rect.y + 2))
         self.screen.blit(title, title_rect)
-        
-        # Draw level selection
-        y_offset = self.screen_height//4
-        # 根据屏幕高度动态调整间距
-        spacing = min(50, (self.screen_height * 0.5) // len(NEW_CONCEPT_LESSONS))
-        
-        for i, lesson in enumerate(NEW_CONCEPT_LESSONS):
-            color = COLORS['HIGHLIGHT'] if i == self.current_level else COLORS['TEXT']
-            level_text = self.font_medium.render(f"Level {lesson['level']}: {lesson['title']}", True, color)
-            level_rect = level_text.get_rect(center=(self.screen_width//2, y_offset))
-            
-            # Draw level text shadow
-            level_text_shadow = self.font_medium.render(f"Level {lesson['level']}: {lesson['title']}", True, COLORS['TEXT_SHADOW'])
-            level_text_shadow_rect = level_text_shadow.get_rect(center=(self.screen_width//2 + 2, y_offset + 2))
-            self.screen.blit(level_text_shadow, level_text_shadow_rect)
-            
-            # Show score if unlocked
-            if self.level_scores[i] > 0:
-                score_text = self.font_small.render(f"Score: {self.level_scores[i]}", True, COLORS['CORRECT'])
-                # Draw score shadow
-                score_text_shadow = self.font_small.render(f"Score: {self.level_scores[i]}", True, COLORS['TEXT_SHADOW'])
-                self.screen.blit(score_text_shadow, (self.screen_width//2 + 202, y_offset - 8))
-                self.screen.blit(score_text, (self.screen_width//2 + 200, y_offset - 10))
-            
-            self.screen.blit(level_text, level_rect)
-            y_offset += spacing
-        
-        # Draw instructions
-        instruction_y = self.screen_height - 150
-        start_text = self.font_small.render("Press number keys to select level, press Enter to start", True, COLORS['TEXT'])
-        start_rect = start_text.get_rect(center=(self.screen_width//2, instruction_y))
-        self.screen.blit(start_text, start_rect)
-        
-        # 添加退出提示
-        exit_text = self.font_small.render("Press ESC to exit game", True, COLORS['WARNING'])
-        exit_rect = exit_text.get_rect(center=(self.screen_width//2, instruction_y + 40))
-        self.screen.blit(exit_text, exit_rect)
+
+        # 副标题
+        subtitle = self.font_small.render("English Typing Game 英语打字学习游戏", True, COLORS['UI'])
+        subtitle_rect = subtitle.get_rect(center=(center_x, 100))
+        self.screen.blit(subtitle, subtitle_rect)
+
+        # 2. 玩家等级信息（简洁一行）
+        if self.level_system:
+            level_info = self.level_system.get_level_info()
+            progress = self.level_system.get_progress_to_next()
+
+            # 等级文本
+            level_text = f"Lv.{self.level_system.current_level} {level_info['title']}"
+            if self.level_system.current_level < 10:
+                next_exp = self.level_system.LEVEL_CONFIG[self.level_system.current_level + 1]['exp_required']
+                level_text += f"  EXP: {self.level_system.current_exp}/{next_exp}"
+
+            level_surface = self.font_small.render(level_text, True, level_info['color'])
+            level_rect = level_surface.get_rect(center=(center_x, 140))
+            self.screen.blit(level_surface, level_rect)
+
+            # 经验条
+            bar_width = 200
+            bar_height = 8
+            bar_x = center_x - bar_width // 2
+            bar_y = 160
+
+            pygame.draw.rect(self.screen, COLORS['PROGRESS_BG'],
+                           (bar_x, bar_y, bar_width, bar_height), border_radius=4)
+            fill_width = int(bar_width * progress / 100)
+            if fill_width > 0:
+                pygame.draw.rect(self.screen, COLORS['PROGRESS'],
+                               (bar_x, bar_y, fill_width, bar_height), border_radius=4)
+
+        # 3. 菜单选项（垂直列表，方向键选择）
+        menu_items = [
+            ("1", "Start Game", "开始游戏"),
+            ("2", "Leaderboard", "排行榜"),
+            ("3", "Achievements", "成就"),
+        ]
+
+        menu_y = 220
+        menu_spacing = 50
+
+        for i, (key, en, cn) in enumerate(menu_items):
+            is_selected = (i == self.menu_index)
+
+            # 选中指示器
+            if is_selected:
+                indicator = ">"
+                color = COLORS['HIGHLIGHT']
+            else:
+                indicator = " "
+                color = COLORS['TEXT']
+
+            item_text = f"{indicator} [{key}] {en} {cn}"
+            item_surface = self.font_medium.render(item_text, True, color)
+            item_rect = item_surface.get_rect(center=(center_x, menu_y + i * menu_spacing))
+
+            # 选中项背景
+            if is_selected:
+                bg_rect = item_rect.inflate(40, 10)
+                pygame.draw.rect(self.screen, (40, 50, 70), bg_rect, border_radius=5)
+
+            self.screen.blit(item_surface, item_rect)
+
+        # 4. 底部快捷键
+        bottom_y = self.screen_height - 50
+        shortcuts = "[Up/Down] Select  [Enter] Confirm  [ESC] Exit  [F11] Fullscreen"
+        shortcut_surface = self.font_small.render(shortcuts, True, COLORS['UI'])
+        shortcut_rect = shortcut_surface.get_rect(center=(center_x, bottom_y))
+        self.screen.blit(shortcut_surface, shortcut_rect)
+
+    def draw_course_select(self):
+        """绘制课程选择界面 (Draw course selection screen)"""
+        self.draw_gradient_background()
+
+        center_x = self.screen_width // 2
+
+        # 标题
+        title = self.font_large.render("Select Course 选择课程", True, COLORS['TEXT'])
+        title_rect = title.get_rect(center=(center_x, 50))
+        self.screen.blit(title, title_rect)
+
+        # 课程列表
+        y_offset = 120
+        available_height = self.screen_height - y_offset - 80
+        max_visible = min(len(NEW_CONCEPT_LESSONS), available_height // 45)
+
+        # 计算可见范围（滚动支持）
+        start_idx = max(0, self.current_level - max_visible // 2)
+        end_idx = min(len(NEW_CONCEPT_LESSONS), start_idx + max_visible)
+        if end_idx - start_idx < max_visible:
+            start_idx = max(0, end_idx - max_visible)
+
+        for i in range(start_idx, end_idx):
+            lesson = NEW_CONCEPT_LESSONS[i]
+            is_selected = (i == self.current_level)
+
+            # 颜色
+            if is_selected:
+                color = COLORS['HIGHLIGHT']
+                indicator = ">"
+            else:
+                color = COLORS['TEXT']
+                indicator = " "
+
+            # 课程信息
+            lesson_title = lesson.get('title', f'Lesson {i+1}')
+            if len(lesson_title) > 35:
+                lesson_title = lesson_title[:32] + "..."
+
+            text = f"{indicator} [{i+1}] {lesson_title}"
+            text_surface = self.font_small.render(text, True, color)
+            text_rect = text_surface.get_rect(midleft=(center_x - 250, y_offset))
+
+            # 选中项背景
+            if is_selected:
+                bg_rect = pygame.Rect(center_x - 280, y_offset - 15, 560, 35)
+                pygame.draw.rect(self.screen, (40, 50, 70), bg_rect, border_radius=5)
+
+            self.screen.blit(text_surface, text_rect)
+
+            # 最高分
+            if i < len(self.level_scores) and self.level_scores[i] > 0:
+                score_text = f"Best: {self.level_scores[i]}"
+                score_surface = self.font_small.render(score_text, True, COLORS['CORRECT'])
+                self.screen.blit(score_surface, (center_x + 150, y_offset - 10))
+
+            y_offset += 45
+
+        # 滚动提示
+        if start_idx > 0:
+            up_text = self.font_small.render("...", True, COLORS['UI'])
+            self.screen.blit(up_text, (center_x - 10, 100))
+        if end_idx < len(NEW_CONCEPT_LESSONS):
+            down_text = self.font_small.render("...", True, COLORS['UI'])
+            self.screen.blit(down_text, (center_x - 10, y_offset))
+
+        # 底部快捷键
+        bottom_y = self.screen_height - 40
+        shortcuts = "[Up/Down] Select  [1-9] Quick Select  [Enter] Start  [ESC] Back"
+        shortcut_surface = self.font_small.render(shortcuts, True, COLORS['UI'])
+        shortcut_rect = shortcut_surface.get_rect(center=(center_x, bottom_y))
+        self.screen.blit(shortcut_surface, shortcut_rect)
+
+    def draw_leaderboard_screen(self):
+        """绘制排行榜界面 (Draw leaderboard screen)"""
+        self.draw_gradient_background()
+
+        # 标题
+        title = self.font_large.render("Leaderboard 排行榜", True, COLORS['TEXT'])
+        title_rect = title.get_rect(center=(self.screen_width//2, 50))
+        self.screen.blit(title, title_rect)
+
+        if not self.leaderboard:
+            no_lb = self.font_medium.render("Leaderboard not available", True, COLORS['WARNING'])
+            no_lb_rect = no_lb.get_rect(center=(self.screen_width//2, self.screen_height//2))
+            self.screen.blit(no_lb, no_lb_rect)
+        else:
+            # 三个排行榜标签
+            tabs = [
+                ("Daily 今日", "daily"),
+                ("Weekly 本周", "weekly"),
+                ("All Time 总榜", "all_time")
+            ]
+
+            tab_width = self.screen_width // 3
+            panel_height = self.screen_height - 180
+
+            for i, (tab_name, category) in enumerate(tabs):
+                x = i * tab_width + 20
+                y = 100
+                width = tab_width - 40
+
+                # 绘制面板
+                self.draw_panel(x, y, width, panel_height, tab_name)
+
+                # 获取排行数据
+                top_scores = self.leaderboard.get_top(category, 10)
+
+                if not top_scores:
+                    no_data = self.font_small.render("No records yet", True, COLORS['UI'])
+                    self.screen.blit(no_data, (x + 20, y + 50))
+                else:
+                    entry_y = y + 40
+                    for rank, entry in enumerate(top_scores, 1):
+                        # 排名颜色
+                        if rank == 1:
+                            rank_color = (255, 215, 0)  # Gold
+                        elif rank == 2:
+                            rank_color = (192, 192, 192)  # Silver
+                        elif rank == 3:
+                            rank_color = (205, 127, 50)  # Bronze
+                        else:
+                            rank_color = COLORS['TEXT']
+
+                        rank_text = f"#{rank} {entry['name'][:8]}"
+                        score_text = f"{entry['score']}"
+
+                        rank_surface = self.font_small.render(rank_text, True, rank_color)
+                        score_surface = self.font_small.render(score_text, True, COLORS['CORRECT'])
+
+                        self.screen.blit(rank_surface, (x + 15, entry_y))
+                        self.screen.blit(score_surface, (x + width - 70, entry_y))
+
+                        entry_y += 35
+
+        # 返回提示
+        back_text = self.font_small.render("Press [ESC] or [L] to go back 按 ESC 或 L 返回", True, COLORS['UI'])
+        back_rect = back_text.get_rect(center=(self.screen_width//2, self.screen_height - 40))
+        self.screen.blit(back_text, back_rect)
+
+    def draw_achievements_screen(self):
+        """绘制成就界面 (Draw achievements screen)"""
+        self.draw_gradient_background()
+
+        # 标题
+        unlocked = self.achievement_system.get_unlocked_count()
+        total = self.achievement_system.get_total_count()
+        title = self.font_large.render(f"Achievements 成就 ({unlocked}/{total})", True, COLORS['TEXT'])
+        title_rect = title.get_rect(center=(self.screen_width//2, 50))
+        self.screen.blit(title, title_rect)
+
+        # 成就列表
+        all_achievements = self.achievement_system.get_all_achievements()
+
+        # 计算布局 - 每行3个
+        cols = 3
+        margin = 20
+        ach_width = (self.screen_width - margin * (cols + 1)) // cols
+        ach_height = 80
+
+        for i, ach in enumerate(all_achievements):
+            col = i % cols
+            row = i // cols
+
+            x = margin + col * (ach_width + margin)
+            y = 100 + row * (ach_height + margin)
+
+            # 背景颜色根据解锁状态
+            if ach['unlocked']:
+                bg_color = (50, 70, 50)  # 绿色调
+                text_color = COLORS['CORRECT']
+            else:
+                bg_color = COLORS['INPUT_BG']
+                text_color = COLORS['UI']
+
+            # 绘制成就卡片
+            card_rect = pygame.Rect(x, y, ach_width, ach_height)
+            pygame.draw.rect(self.screen, bg_color, card_rect, border_radius=8)
+            pygame.draw.rect(self.screen, COLORS['UI'], card_rect, 2, border_radius=8)
+
+            # 图标和名称
+            icon_name = f"{ach['icon']} {ach['name']}"
+            name_surface = self.font_small.render(icon_name, True, text_color)
+            self.screen.blit(name_surface, (x + 10, y + 10))
+
+            # 描述
+            desc_surface = self.font_small.render(ach['description'], True, COLORS['TEXT'])
+            self.screen.blit(desc_surface, (x + 10, y + 40))
+
+        # 返回提示
+        back_text = self.font_small.render("Press [ESC] or [A] to go back 按 ESC 或 A 返回", True, COLORS['UI'])
+        back_rect = back_text.get_rect(center=(self.screen_width//2, self.screen_height - 40))
+        self.screen.blit(back_text, back_rect)
     
     def draw_game(self):
         """Draw game interface"""
@@ -1113,36 +1445,120 @@ class Game:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     running = False
+                elif event.type == VIDEORESIZE:
+                    # 处理窗口大小变化 (Handle window resize)
+                    if not self.fullscreen:
+                        self.handle_resize(event.w, event.h)
                 elif event.type == KEYDOWN:
+                    # F11 全局切换全屏 (F11 toggle fullscreen globally)
+                    if event.key == K_F11:
+                        self.toggle_fullscreen()
+                        continue
                     if self.state == "menu":
-                        # 处理菜单输入
+                        # 主菜单输入 (Main menu input)
                         if event.key == K_ESCAPE:
                             running = False
-                        elif event.key in [K_1, K_2, K_3, K_4, K_5]:
-                            self.current_level = event.key - K_1
+                        elif event.key == K_UP:
+                            self.menu_index = (self.menu_index - 1) % 3
+                        elif event.key == K_DOWN:
+                            self.menu_index = (self.menu_index + 1) % 3
+                        elif event.key == K_RETURN:
+                            # Enter确认选择
+                            if self.menu_index == 0:  # Start Game
+                                self.state = "course_select"
+                            elif self.menu_index == 1:  # Leaderboard
+                                self.state = "leaderboard"
+                            elif self.menu_index == 2:  # Achievements
+                                self.state = "achievements"
+                        elif event.key == K_1:
+                            self.menu_index = 0
+                            self.state = "course_select"
+                        elif event.key == K_2:
+                            self.menu_index = 1
+                            self.state = "leaderboard"
+                        elif event.key == K_3:
+                            self.menu_index = 2
+                            self.state = "achievements"
+
+                    elif self.state == "course_select":
+                        # 课程选择界面 (Course selection)
+                        if event.key == K_ESCAPE:
+                            self.state = "menu"
+                        elif event.key == K_UP:
+                            self.current_level = (self.current_level - 1) % len(NEW_CONCEPT_LESSONS)
+                        elif event.key == K_DOWN:
+                            self.current_level = (self.current_level + 1) % len(NEW_CONCEPT_LESSONS)
+                        elif event.key == K_RETURN:
                             self.reset_level()
                             self.state = "playing"
-                            # 进入input界面，开始朗读当前句子
                             self.speak_sentence()
+                        elif event.key in [K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9]:
+                            level_idx = event.key - K_1
+                            if level_idx < len(NEW_CONCEPT_LESSONS):
+                                self.current_level = level_idx
+                                self.reset_level()
+                                self.state = "playing"
+                                self.speak_sentence()
+
+                    elif self.state == "leaderboard":
+                        # 排行榜界面 (Leaderboard)
+                        if event.key in [K_ESCAPE, K_BACKSPACE]:
+                            self.state = "menu"
+
+                    elif self.state == "achievements":
+                        # 成就界面 (Achievements)
+                        if event.key in [K_ESCAPE, K_BACKSPACE]:
+                            self.state = "menu"
+
                     elif self.state == "playing":
-                        # 处理游戏输入
+                        # 处理游戏输入 (Handle game input)
                         if event.key == K_BACKSPACE:
                             self.handle_input('\b')
                         elif event.key == K_RETURN:
                             self.handle_input('\r')
                         elif event.key == K_ESCAPE:
                             self.state = "menu"
-                        elif event.key == K_SPACE:
-                            # 空格键朗读当前句子
+                        elif event.key == K_F1:
+                            # F1键朗读当前句子 (F1 to read sentence)
                             self.speak_sentence()
-                        elif event.key == K_TAB:
-                            # Tab键朗读当前单词
+                        elif event.key == K_F2:
+                            # F2键朗读当前单词 (F2 to read current word)
                             self.speak_current_word()
                         else:
-                            # 获取按键字符
+                            # 获取按键字符（包括空格）
+                            # Get key character (including space)
                             key_char = event.unicode
                             if key_char:
                                 self.handle_input(key_char)
+
+                    elif self.state == "level_complete":
+                        # 处理关卡完成输入 (Handle level complete input)
+                        if event.key == K_ESCAPE:
+                            self.state = "menu"
+                        elif event.key == K_n:
+                            if self.current_level < len(NEW_CONCEPT_LESSONS) - 1:
+                                self.current_level += 1
+                                self.reset_level()
+                                self.state = "playing"
+                                self.speak_sentence()
+                            else:
+                                self.state = "menu"
+                        elif event.key == K_m:
+                            self.state = "menu"
+
+                    elif self.state == "game_over":
+                        # 处理游戏结束输入 (Handle game over input)
+                        if event.key == K_ESCAPE:
+                            self.state = "menu"
+                        elif event.key == K_r:
+                            # 重新开始当前关卡
+                            self.reset_level()
+                            self.state = "playing"
+                            self.speak_sentence()
+                        elif event.key == K_m:
+                            # 返回菜单
+                            self.state = "menu"
+
                 # 处理鼠标点击事件（点击单词朗读）
                 elif event.type == MOUSEBUTTONDOWN:
                     if event.button == 1 and self.state == "playing":  # 左键点击
@@ -1152,41 +1568,23 @@ class Game:
                                 # 创建点击反馈粒子效果
                                 self.create_particles(rect.centerx, rect.centery, (100, 200, 255), 5)
                                 break
-                    elif self.state == "level_complete":
-                        # 处理关卡完成输入
-                        if event.key == K_ESCAPE:
-                            running = False
-                        elif event.key == K_n:
-                            if self.current_level < len(NEW_CONCEPT_LESSONS) - 1:
-                                self.current_level += 1
-                                self.reset_level()
-                                self.state = "playing"
-                            else:
-                                self.state = "menu"
-                        elif event.key == K_m:
-                            self.state = "menu"
-                    elif self.state == "game_over":
-                        # 处理游戏结束输入
-                        if event.key == K_ESCAPE:
-                            running = False
-                        elif event.key == K_r:
-                            # 重新开始当前关卡
-                            self.reset_level()
-                            self.state = "playing"
-                        elif event.key == K_m:
-                            # 返回菜单
-                            self.state = "menu"
-            
+
             # 检查时间限制
             if self.state == "playing":
                 elapsed_time = time.time() - self.start_time
                 if elapsed_time > self.time_limit:
                     # 时间到，挑战失败
                     self.state = "game_over"
-            
-            # 绘制界面
+
+            # 绘制界面 (Draw interface based on state)
             if self.state == "menu":
                 self.draw_menu()
+            elif self.state == "course_select":
+                self.draw_course_select()
+            elif self.state == "leaderboard":
+                self.draw_leaderboard_screen()
+            elif self.state == "achievements":
+                self.draw_achievements_screen()
             elif self.state == "playing":
                 self.draw_game()
             elif self.state == "level_complete":

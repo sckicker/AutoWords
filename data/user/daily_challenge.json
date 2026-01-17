@@ -1,0 +1,33 @@
+{
+  "today_challenge": {
+    "date": "2026-01-17",
+    "type": "endurance",
+    "info": {
+      "name": "Endurance Test",
+      "title": "\u8010\u529b\u6d4b\u8bd5",
+      "description": "Type continuously for 5 minutes",
+      "description_cn": "\u8fde\u7eed\u8f93\u51655\u5206\u949f\u4e0d\u505c\u6b62",
+      "icon": "\ud83d\udcaa",
+      "time_limit": 300,
+      "goal_type": "time",
+      "goals": [
+        180,
+        240,
+        300
+      ]
+    }
+  },
+  "challenge_progress": {
+    "chars": 0,
+    "words": 0,
+    "sentences": 0,
+    "combo": 0,
+    "max_combo": 0,
+    "time": 0,
+    "errors": 0,
+    "started": false,
+    "start_time": null
+  },
+  "completed_today": false,
+  "reward_tier": null
+}

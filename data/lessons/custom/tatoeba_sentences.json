@@ -1,0 +1,890 @@
+{
+  "meta": {
+    "source": "Tatoeba",
+    "license": "CC BY 2.0",
+    "version": "1.0",
+    "description": "从Tatoeba例句库抓取的英语练习句子"
+  },
+  "lessons": [
+    {
+      "level": 1,
+      "title": "Practice 1 - hello, goodbye, please...",
+      "difficulty": 1,
+      "words": [
+        "hello",
+        "goodbye",
+        "please",
+        "thank",
+        "sorry"
+      ],
+      "sentences": [
+        {
+          "text": "Hello, teacher.",
+          "translation": "老師好。"
+        },
+        {
+          "text": "Hello, Doctor!",
+          "translation": ""
+        },
+        {
+          "text": "Hello, yes?",
+          "translation": ""
+        },
+        {
+          "text": "Goodbye, mother.",
+          "translation": ""
+        },
+        {
+          "text": "Wave goodbye.",
+          "translation": ""
+        },
+        {
+          "text": "Goodbye, friends.",
+          "translation": ""
+        },
+        {
+          "text": "Please answer.",
+          "translation": ""
+        },
+        {
+          "text": "Please order.",
+          "translation": ""
+        },
+        {
+          "text": "Please paint.",
+          "translation": ""
+        },
+        {
+          "text": "Thanks again!",
+          "translation": ""
+        },
+        {
+          "text": "Good, thanks.",
+          "translation": ""
+        },
+        {
+          "text": "Thank him.",
+          "translation": ""
+        },
+        {
+          "text": "Sorry, what?",
+          "translation": ""
+        },
+        {
+          "text": "Sorry, bud.",
+          "translation": ""
+        },
+        {
+          "text": "No, sorry.",
+          "translation": ""
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "title": "Practice 2 - yes, no, what...",
+      "difficulty": 1,
+      "words": [
+        "yes",
+        "no",
+        "what",
+        "where",
+        "when"
+      ],
+      "sentences": [
+        {
+          "text": "Hello, yes?",
+          "translation": ""
+        },
+        {
+          "text": "Yes, there.",
+          "translation": ""
+        },
+        {
+          "text": "Maybe yes.",
+          "translation": ""
+        },
+        {
+          "text": "No whispering!",
+          "translation": ""
+        },
+        {
+          "text": "No urinating!",
+          "translation": ""
+        },
+        {
+          "text": "Otherwise, no!",
+          "translation": ""
+        },
+        {
+          "text": "What overconfidence!",
+          "translation": ""
+        },
+        {
+          "text": "What negligence!",
+          "translation": ""
+        },
+        {
+          "text": "What, why?",
+          "translation": ""
+        },
+        {
+          "text": "Where again?",
+          "translation": ""
+        },
+        {
+          "text": "Under where?",
+          "translation": ""
+        },
+        {
+          "text": "Where else?",
+          "translation": ""
+        },
+        {
+          "text": "When exactly?",
+          "translation": "準確是什麼時候？"
+        },
+        {
+          "text": "Till when?",
+          "translation": ""
+        },
+        {
+          "text": "Until when?",
+          "translation": ""
+        }
+      ]
+    },
+    {
+      "level": 3,
+      "title": "Practice 3 - who, why, how...",
+      "difficulty": 1,
+      "words": [
+        "who",
+        "why",
+        "how",
+        "I",
+        "you"
+      ],
+      "sentences": [
+        {
+          "text": "Who clapped?",
+          "translation": ""
+        },
+        {
+          "text": "Who shouted?",
+          "translation": ""
+        },
+        {
+          "text": "Who snitched?",
+          "translation": ""
+        },
+        {
+          "text": "What, why?",
+          "translation": ""
+        },
+        {
+          "text": "Still, why?",
+          "translation": ""
+        },
+        {
+          "text": "Why, then?",
+          "translation": ""
+        },
+        {
+          "text": "How irritating!",
+          "translation": ""
+        },
+        {
+          "text": "How proper!",
+          "translation": ""
+        },
+        {
+          "text": "How tacky!",
+          "translation": ""
+        },
+        {
+          "text": "I continued.",
+          "translation": ""
+        },
+        {
+          "text": "I overate.",
+          "translation": "我吃多了。"
+        },
+        {
+          "text": "I concluded.",
+          "translation": ""
+        },
+        {
+          "text": "Caught you!",
+          "translation": ""
+        },
+        {
+          "text": "You misread.",
+          "translation": ""
+        },
+        {
+          "text": "You stink!",
+          "translation": "你臭死了！"
+        }
+      ]
+    },
+    {
+      "level": 4,
+      "title": "Practice 4 - he, she, we...",
+      "difficulty": 1,
+      "words": [
+        "he",
+        "she",
+        "we",
+        "they",
+        "it"
+      ],
+      "sentences": [
+        {
+          "text": "He starves.",
+          "translation": ""
+        },
+        {
+          "text": "He left...",
+          "translation": ""
+        },
+        {
+          "text": "He oppresses.",
+          "translation": ""
+        },
+        {
+          "text": "She starves.",
+          "translation": ""
+        },
+        {
+          "text": "She concentrated.",
+          "translation": ""
+        },
+        {
+          "text": "She miscarried.",
+          "translation": ""
+        },
+        {
+          "text": "We hatefucked.",
+          "translation": ""
+        },
+        {
+          "text": "We shrugged.",
+          "translation": ""
+        },
+        {
+          "text": "We disagree.",
+          "translation": ""
+        },
+        {
+          "text": "They accepted.",
+          "translation": ""
+        },
+        {
+          "text": "They went.",
+          "translation": ""
+        },
+        {
+          "text": "They overestimated.",
+          "translation": ""
+        },
+        {
+          "text": "Expand it.",
+          "translation": ""
+        },
+        {
+          "text": "Camouflage it.",
+          "translation": ""
+        },
+        {
+          "text": "Accept it!",
+          "translation": ""
+        }
+      ]
+    },
+    {
+      "level": 5,
+      "title": "Practice 5 - is, are, am...",
+      "difficulty": 1,
+      "words": [
+        "is",
+        "are",
+        "am",
+        "was",
+        "were"
+      ],
+      "sentences": [
+        {
+          "text": "Is Italian difficult?",
+          "translation": ""
+        },
+        {
+          "text": "Is blud Einstein?",
+          "translation": ""
+        },
+        {
+          "text": "Information is here.",
+          "translation": ""
+        },
+        {
+          "text": "People are blind.",
+          "translation": ""
+        },
+        {
+          "text": "Humans are vertebrates.",
+          "translation": ""
+        },
+        {
+          "text": "Are Muslims evil?",
+          "translation": ""
+        },
+        {
+          "text": "Am I silly?",
+          "translation": ""
+        },
+        {
+          "text": "I am patient.",
+          "translation": ""
+        },
+        {
+          "text": "I am Riffi.",
+          "translation": ""
+        },
+        {
+          "text": "That was you.",
+          "translation": ""
+        },
+        {
+          "text": "Everything was visible.",
+          "translation": ""
+        },
+        {
+          "text": "Tom was indulgent.",
+          "translation": ""
+        },
+        {
+          "text": "They were hugging.",
+          "translation": ""
+        },
+        {
+          "text": "You were spacey.",
+          "translation": ""
+        },
+        {
+          "text": "You were inattentive.",
+          "translation": ""
+        }
+      ]
+    },
+    {
+      "level": 6,
+      "title": "Practice 6 - have, has, can...",
+      "difficulty": 2,
+      "words": [
+        "have",
+        "has",
+        "can",
+        "could",
+        "will"
+      ],
+      "sentences": [
+        {
+          "text": "They have.",
+          "translation": "他們有。"
+        },
+        {
+          "text": "Have respect!",
+          "translation": "要尊重！"
+        },
+        {
+          "text": "Have patience.",
+          "translation": "耐心點。"
+        },
+        {
+          "text": "Has everyone left?",
+          "translation": ""
+        },
+        {
+          "text": "Tom has onions.",
+          "translation": ""
+        },
+        {
+          "text": "Tom has layers.",
+          "translation": ""
+        },
+        {
+          "text": "Can he continue?",
+          "translation": ""
+        },
+        {
+          "text": "Can I refuse?",
+          "translation": ""
+        },
+        {
+          "text": "He could help.",
+          "translation": ""
+        },
+        {
+          "text": "He could wait.",
+          "translation": ""
+        },
+        {
+          "text": "He could go.",
+          "translation": ""
+        },
+        {
+          "text": "God willing.",
+          "translation": ""
+        },
+        {
+          "text": "God willing!",
+          "translation": ""
+        },
+        {
+          "text": "God willing...",
+          "translation": "若天准许......"
+        }
+      ]
+    },
+    {
+      "level": 7,
+      "title": "Practice 7 - would, should, like...",
+      "difficulty": 2,
+      "words": [
+        "would",
+        "should",
+        "like",
+        "love",
+        "want"
+      ],
+      "sentences": [
+        {
+          "text": "Would that work?",
+          "translation": ""
+        },
+        {
+          "text": "Would you start?",
+          "translation": ""
+        },
+        {
+          "text": "Would it be?",
+          "translation": ""
+        },
+        {
+          "text": "You should wait.",
+          "translation": ""
+        },
+        {
+          "text": "Tom should speak.",
+          "translation": ""
+        },
+        {
+          "text": "They should disband.",
+          "translation": ""
+        },
+        {
+          "text": "Like, totally!",
+          "translation": ""
+        },
+        {
+          "text": "Like hell!",
+          "translation": ""
+        },
+        {
+          "text": "Very likely.",
+          "translation": ""
+        },
+        {
+          "text": "Love listening?",
+          "translation": "你爱听吗？"
+        },
+        {
+          "text": "Gimme love.",
+          "translation": ""
+        },
+        {
+          "text": "Love elates.",
+          "translation": ""
+        },
+        {
+          "text": "I want dorayaki!",
+          "translation": "我要銅鑼燒！"
+        },
+        {
+          "text": "You are wanted.",
+          "translation": ""
+        },
+        {
+          "text": "Nobody wants him.",
+          "translation": ""
+        }
+      ]
+    },
+    {
+      "level": 8,
+      "title": "Practice 8 - need, help, book...",
+      "difficulty": 2,
+      "words": [
+        "need",
+        "help",
+        "book",
+        "pen",
+        "school"
+      ],
+      "sentences": [
+        {
+          "text": "Need backup.",
+          "translation": ""
+        },
+        {
+          "text": "Waiter needed.",
+          "translation": "需要跑堂。"
+        },
+        {
+          "text": "We need weapons.",
+          "translation": ""
+        },
+        {
+          "text": "They helped.",
+          "translation": ""
+        },
+        {
+          "text": "We helped.",
+          "translation": ""
+        },
+        {
+          "text": "She helped.",
+          "translation": ""
+        },
+        {
+          "text": "Read books.",
+          "translation": ""
+        },
+        {
+          "text": "Fuck your book.",
+          "translation": ""
+        },
+        {
+          "text": "She booked it.",
+          "translation": ""
+        },
+        {
+          "text": "Got a pen?",
+          "translation": ""
+        },
+        {
+          "text": "Get a pen.",
+          "translation": ""
+        },
+        {
+          "text": "Your pens suck.",
+          "translation": ""
+        },
+        {
+          "text": "School reopened.",
+          "translation": ""
+        },
+        {
+          "text": "School ended.",
+          "translation": ""
+        },
+        {
+          "text": "School sucks!",
+          "translation": ""
+        }
+      ]
+    },
+    {
+      "level": 9,
+      "title": "Practice 9 - teacher, student, eat...",
+      "difficulty": 2,
+      "words": [
+        "teacher",
+        "student",
+        "eat",
+        "drink",
+        "read"
+      ],
+      "sentences": [
+        {
+          "text": "Hello, teacher.",
+          "translation": "老師好。"
+        },
+        {
+          "text": "Teacher Guan!",
+          "translation": "关老师！"
+        },
+        {
+          "text": "Hello teacher!",
+          "translation": "老師好。"
+        },
+        {
+          "text": "Three students.",
+          "translation": "三位學生。"
+        },
+        {
+          "text": "Welcome, students!",
+          "translation": "學生們，歡迎入學！"
+        },
+        {
+          "text": "They were students.",
+          "translation": "他們是學生。"
+        },
+        {
+          "text": "Eat something!",
+          "translation": ""
+        },
+        {
+          "text": "Eat spaghetti.",
+          "translation": ""
+        },
+        {
+          "text": "Eat artichokes.",
+          "translation": ""
+        },
+        {
+          "text": "They drink.",
+          "translation": ""
+        },
+        {
+          "text": "Drink plenty.",
+          "translation": ""
+        },
+        {
+          "text": "Drink together.",
+          "translation": ""
+        },
+        {
+          "text": "Read much.",
+          "translation": ""
+        },
+        {
+          "text": "Read slowly.",
+          "translation": ""
+        },
+        {
+          "text": "Read that!",
+          "translation": ""
+        }
+      ]
+    },
+    {
+      "level": 10,
+      "title": "Practice 10 - write, play, work...",
+      "difficulty": 2,
+      "words": [
+        "write",
+        "play",
+        "work",
+        "good",
+        "bad"
+      ],
+      "sentences": [
+        {
+          "text": "Write properly.",
+          "translation": ""
+        },
+        {
+          "text": "Write legibly!",
+          "translation": ""
+        },
+        {
+          "text": "Just write.",
+          "translation": ""
+        },
+        {
+          "text": "Play nicely.",
+          "translation": ""
+        },
+        {
+          "text": "Play more.",
+          "translation": ""
+        },
+        {
+          "text": "Anthony played.",
+          "translation": ""
+        },
+        {
+          "text": "Nice work!",
+          "translation": "辛苦了。"
+        },
+        {
+          "text": "Work faster.",
+          "translation": "快点干你的活。"
+        },
+        {
+          "text": "Work again.",
+          "translation": "又要工作。"
+        },
+        {
+          "text": "Good line!",
+          "translation": ""
+        },
+        {
+          "text": "Good ferret!",
+          "translation": ""
+        },
+        {
+          "text": "Good girl!",
+          "translation": ""
+        },
+        {
+          "text": "Bad haircut?",
+          "translation": ""
+        },
+        {
+          "text": "Bad comes.",
+          "translation": ""
+        }
+      ]
+    },
+    {
+      "level": 11,
+      "title": "Practice 11 - big, small, new...",
+      "difficulty": 3,
+      "words": [
+        "big",
+        "small",
+        "new",
+        "old",
+        "home"
+      ],
+      "sentences": [
+        {
+          "text": "Think big.",
+          "translation": ""
+        },
+        {
+          "text": "Big whoop.",
+          "translation": ""
+        },
+        {
+          "text": "Think big!",
+          "translation": ""
+        },
+        {
+          "text": "Start small.",
+          "translation": ""
+        },
+        {
+          "text": "Small world.",
+          "translation": "世界是一个小村。"
+        },
+        {
+          "text": "Mark felt small.",
+          "translation": ""
+        },
+        {
+          "text": "Nothing new.",
+          "translation": "沒什麼新鮮事。"
+        },
+        {
+          "text": "Anything new?",
+          "translation": "有什么新鲜事吗？"
+        },
+        {
+          "text": "Save as new.",
+          "translation": ""
+        },
+        {
+          "text": "Old queen.",
+          "translation": ""
+        },
+        {
+          "text": "Old times!",
+          "translation": ""
+        },
+        {
+          "text": "Sappho is old.",
+          "translation": ""
+        },
+        {
+          "text": "Phone home.",
+          "translation": "打电话回家！"
+        },
+        {
+          "text": "Ring home.",
+          "translation": "打电话回家！"
+        },
+        {
+          "text": "Phone home!",
+          "translation": "打电话回家！"
+        }
+      ]
+    },
+    {
+      "level": 12,
+      "title": "Practice 12 - family, friend, time...",
+      "difficulty": 3,
+      "words": [
+        "family",
+        "friend",
+        "time",
+        "day",
+        "year"
+      ],
+      "sentences": [
+        {
+          "text": "Only family remains.",
+          "translation": ""
+        },
+        {
+          "text": "Ableism destroys families.",
+          "translation": ""
+        },
+        {
+          "text": "Ask your family.",
+          "translation": ""
+        },
+        {
+          "text": "Greetings, friends!",
+          "translation": ""
+        },
+        {
+          "text": "Hello, friends.",
+          "translation": ""
+        },
+        {
+          "text": "Hello, friend.",
+          "translation": ""
+        },
+        {
+          "text": "What timing!",
+          "translation": ""
+        },
+        {
+          "text": "About time!",
+          "translation": ""
+        },
+        {
+          "text": "Break time!",
+          "translation": ""
+        },
+        {
+          "text": "Every day.",
+          "translation": ""
+        },
+        {
+          "text": "Beautiful day.",
+          "translation": ""
+        },
+        {
+          "text": "Day breaks.",
+          "translation": "天亮了。"
+        },
+        {
+          "text": "Years ago.",
+          "translation": ""
+        },
+        {
+          "text": "Next year.",
+          "translation": ""
+        },
+        {
+          "text": "Years passed.",
+          "translation": "多少年过去了。"
+        }
+      ]
+    }
+  ]
+}
